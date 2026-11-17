@@ -7,9 +7,11 @@ A small REST API built with [Hono](https://hono.dev) for managing tasks. Used as
 | Method | Path | Description |
 | --- | --- | --- |
 | GET | `/` | Health check |
-| GET | `/tasks` | List all tasks |
+| GET | `/tasks` | List tasks, in creation order; append `?limit=N` (positive integer) to return only the first N |
 | GET | `/tasks/:id` | Get one task |
 | POST | `/tasks` | Create a task (`{ "title": "..." }`) |
+
+An invalid `limit` (non-numeric, zero, negative, or non-integer) returns `400 { "error": "limit must be a positive integer" }`; an absent or empty `limit` returns all tasks.
 
 ## Development
 

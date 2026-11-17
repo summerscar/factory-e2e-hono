@@ -12,9 +12,18 @@ function nextId(): string {
 
 export const tasksRoute = new Hono()
 
-// List all tasks.
+// List tasks, optionally limited to the first N in creation order.
 tasksRoute.get('/', (c) => {
-  return c.json([...tasks.values()])
+  const items = [...tasks.values()]
+  const rawLimit = c.req.query('limit')
+  if (rawLimit !== undefined && rawLimit.trim() !== '') {
+    const limit = Number(rawLimit)
+    if (!Number.isInteger(limit) || limit <= 0) {
+      return c.json({ error: 'limit must be a positive integer' }, 400)
+    }
+    return c.json(items.slice(0, limit))
+  }
+  return c.json(items)
 })
 
 // Fetch a single task by id.
